@@ -1,0 +1,69 @@
+﻿@page "/posts/{id:int}"
+@using HTTPClients.ClientInterfaces
+@using global::Shared.Models
+@using System.Security.Claims
+@inject IPostsService postService
+@inject NavigationManager navMgr
+@inject IJSRuntime JsRuntime
+
+
+
+@if (post != null){
+    <div class="card">
+        <h3>@post.title</h3>
+        <div class="form-group field">
+            <label>@post.body</label>
+        </div>
+    </div>
+}
+else
+{
+    <span>Post could not be found</span>
+}
+
+@code {
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationStateTask { get; set; }
+    [Parameter]
+    public int Id { get; set; }
+    private Post post { get; set; }
+    private string? Username { get; set; }
+    private string errorMsg = "";
+    
+    protected override async Task OnInitializedAsync()
+    {
+        errorMsg = "";
+        try
+        {
+            post = await postService.GetPostByIdAsync(Id);
+
+            var authState = await AuthenticationStateTask;
+            ClaimsPrincipal principal = authState.User;
+            Username = (from claim in principal.Claims where claim.Type == "Username" select claim.Value).FirstOrDefault();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            errorMsg = e.Message;
+        }
+    }
+}
+
+
+<style>
+    .card {
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+        transition: 0.3s;
+        width: 250px;
+        padding: 25px;
+        text-align: center;
+        margin: auto;
+        margin-top: 50px;
+        border-radius: 15px;
+    }
+    
+    .field {
+        margin-top: 20px;
+    }
+    
+    </style>

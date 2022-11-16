@@ -1,0 +1,98 @@
+﻿@page "/PostsPage"
+@using global::Shared.Models
+@using HTTPClients.ClientInterfaces
+@using UIComponents
+@inject IPostsService postService
+@inject NavigationManager navMgr
+@inject IJSRuntime JsRuntime
+@attribute [Authorize]
+
+<h3>Posts Page</h3>
+
+
+
+
+
+@if (posts == null)
+{
+}
+else if (!posts.Any())
+{
+    <p>No Posts to display</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Post ID</th>
+            <th>Owner Username</th>
+            <th>Title</th>
+            <th>Body</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in posts)
+        {
+            <tr>
+                <td>@item.postId</td>
+                <td>@item.user.userName</td>
+                <td>@item.title</td>
+                <td>
+                    <img src="open-sign.gif" class="funnel" @onclick="@(() => navMgr.NavigateTo($"/posts/{item.postId}"))"/>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+@if (!string.IsNullOrEmpty(errormsg))
+{
+    <label style="color: red">@errormsg</label>
+}
+
+@* @if (!string.IsNullOrEmpty(errormsg)) *@
+@* { *@
+@*     <div> *@
+@*         <span>@errormsg</span> *@
+@*     </div> *@
+@* } *@
+@* *@
+@* else if (!posts.Any()) *@
+@* { *@
+@*     <p>No Posts to display.</p> *@
+@* } *@
+@* else *@
+@* { *@
+@*     @foreach (var post in posts) *@
+@*     { *@
+@*         <DisplayPostBody Id="@post.postId" Title="@post.title" Username="@post.user.userName"></DisplayPostBody> *@
+@*         <br/>                                                                                          *@
+@*     } *@
+@* } *@
+
+
+@code {
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationStateTask { get; set; }
+    [Parameter]
+    public int Id { get; set; }
+
+    private Post post { get; set; }
+    private IEnumerable<Post> posts = new List<Post>();
+    private string errormsg = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            posts = await postService.GetAllPostsAsync();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            errormsg = e.Message;
+        }
+    }
+
+}
