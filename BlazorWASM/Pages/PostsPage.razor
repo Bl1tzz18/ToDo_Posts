@@ -51,27 +51,6 @@ else
     <label style="color: red">@errormsg</label>
 }
 
-@* @if (!string.IsNullOrEmpty(errormsg)) *@
-@* { *@
-@*     <div> *@
-@*         <span>@errormsg</span> *@
-@*     </div> *@
-@* } *@
-@* *@
-@* else if (!posts.Any()) *@
-@* { *@
-@*     <p>No Posts to display.</p> *@
-@* } *@
-@* else *@
-@* { *@
-@*     @foreach (var post in posts) *@
-@*     { *@
-@*         <DisplayPostBody Id="@post.postId" Title="@post.title" Username="@post.user.userName"></DisplayPostBody> *@
-@*         <br/>                                                                                          *@
-@*     } *@
-@* } *@
-
-
 @code {
     [CascadingParameter]
     private Task<AuthenticationState> AuthenticationStateTask { get; set; }

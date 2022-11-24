@@ -6,7 +6,8 @@ using Shared.Models;
 
 namespace HTTPClients.Implementation;
 
-public class PostsHttpClient : IPostsService
+public class 
+    PostsHttpClient : IPostsService
 {
     private readonly HttpClient client;
 
