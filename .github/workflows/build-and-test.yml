@@ -4,20 +4,21 @@ name: Build and Test
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   pull_request:
-    branches:
-      - main
+    branches: [main]
 
-steps:
-  - name: Setup .NET
-    uses: actions/setup-dotnet@v3
-    with:
-      dotnet-version: "6.0.x"
-  - name: Restore dependencies
-    run: dotnet restore
-  - name: Build
-    run: dotnet build --configuration Release
-  - name: Run tests
-    run: dotnet test --configuration Release
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: "6.0.x"
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --configuration Release
+      - name: Run tests
+        run: dotnet test --configuration Release
